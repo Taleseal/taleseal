@@ -17,14 +17,14 @@ seeing the preview and the redaction report first.
 Inside Claude Code (two slash commands):
 
 ```
-/plugin marketplace add vepler/taleseal
+/plugin marketplace add Taleseal/taleseal
 /plugin install taleseal@taleseal
 ```
 
 Or from a shell:
 
 ```sh
-claude plugin marketplace add vepler/taleseal && claude plugin install taleseal@taleseal
+claude plugin marketplace add Taleseal/taleseal && claude plugin install taleseal@taleseal
 ```
 
 The plugin invokes `npx -y taleseal@0.1.0` — the pinned [`taleseal` npm

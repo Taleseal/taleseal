@@ -17,14 +17,14 @@ your machine.
 Inside Claude Code:
 
 ```
-/plugin marketplace add vepler/taleseal
+/plugin marketplace add Taleseal/taleseal
 /plugin install taleseal@taleseal
 ```
 
 Or from a shell:
 
 ```sh
-claude plugin marketplace add vepler/taleseal && claude plugin install taleseal@taleseal
+claude plugin marketplace add Taleseal/taleseal && claude plugin install taleseal@taleseal
 ```
 
 Then `/taleseal:seal` previews and publishes the current session, or just say
@@ -33,7 +33,7 @@ Then `/taleseal:seal` previews and publishes the current session, or just say
 ### Codex
 
 ```sh
-codex plugin marketplace add vepler/taleseal
+codex plugin marketplace add Taleseal/taleseal
 codex plugin add taleseal@taleseal
 ```
 
@@ -60,7 +60,7 @@ first trust of the repository:
     "taleseal": {
       "source": {
         "source": "github",
-        "repo": "vepler/taleseal"
+        "repo": "Taleseal/taleseal"
       }
     }
   },

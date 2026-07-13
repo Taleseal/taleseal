@@ -2,7 +2,7 @@
   "name": "taleseal",
   "description": "Taleseal integrations for Codex — seal agent runs as shareable tales",
   "owner": {
-    "name": "Vepler",
+    "name": "Taleseal",
     "url": "https://taleseal.com"
   },
   "plugins": [

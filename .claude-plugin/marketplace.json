@@ -2,7 +2,7 @@
   "name": "taleseal",
   "description": "Official taleseal plugins — seal agent runs as shareable tales.",
   "owner": {
-    "name": "Vepler",
+    "name": "Taleseal",
     "url": "https://taleseal.com"
   },
   "plugins": [
@@ -11,7 +11,7 @@
       "source": "./plugins/claude-code",
       "description": "Seal your Claude Code runs as shareable tales. /taleseal:seal previews the composed tale — redaction report included — then publishes it to a short URL once you confirm.",
       "author": {
-        "name": "Vepler"
+        "name": "Taleseal"
       },
       "homepage": "https://taleseal.com",
       "category": "workflow",

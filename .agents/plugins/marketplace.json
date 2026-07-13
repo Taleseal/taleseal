@@ -1,0 +1,22 @@
+{
+  "name": "taleseal",
+  "description": "Taleseal integrations for Codex — seal agent runs as shareable tales",
+  "owner": {
+    "name": "Vepler",
+    "url": "https://taleseal.com"
+  },
+  "plugins": [
+    {
+      "name": "taleseal",
+      "description": "Seal the current Codex session as a shareable tale — preview, confirm, publish, report the URL",
+      "source": "./plugins/codex",
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "version": "0.1.0",
+      "category": "productivity",
+      "tags": ["sharing", "transcripts", "tales", "sessions"]
+    }
+  ]
+}

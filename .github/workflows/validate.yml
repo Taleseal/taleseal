@@ -1,0 +1,38 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: No @latest anywhere
+        run: |
+          if grep -rn 'taleseal@''latest' . --exclude-dir=.git; then
+            echo '::error::taleseal@latest found — pin an exact version'
+            exit 1
+          fi
+
+      - name: All JSON parses
+        run: |
+          find . -name '*.json' -not -path './.git/*' -print0 | xargs -0 -n1 jq empty
+
+      - name: Manifest source paths exist
+        run: |
+          jq -r '.plugins[].source' .claude-plugin/marketplace.json .agents/plugins/marketplace.json |
+          while read -r src; do
+            test -d "$src" || { echo "::error::missing plugin source $src"; exit 1; }
+          done
+
+      - name: Claude plugin validate
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          claude plugin validate .

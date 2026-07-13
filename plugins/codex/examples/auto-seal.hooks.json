@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r .transcript_path | xargs -I{} npx -y taleseal@0.1.0 seal --transcript {} --yes --publisher codex-stop-hook"
+          }
+        ]
+      }
+    ]
+  }
+}

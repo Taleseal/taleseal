@@ -34,7 +34,7 @@ Then `/taleseal:seal` previews and publishes the current session, or just say
 
 ```sh
 codex plugin marketplace add vepler/taleseal
-codex plugin install taleseal@taleseal
+codex plugin add taleseal@taleseal
 ```
 
 Then ask Codex to "seal this session".

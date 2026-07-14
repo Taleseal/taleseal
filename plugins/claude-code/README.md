@@ -7,12 +7,14 @@ Seal your Claude Code runs as shareable **tales**. The plugin adds:
   `--status succeeded|partial|failed`.
 - **A sealing skill** — say "seal this session" or "share what this run did" in plain words
   and Claude walks the same preview → confirm → publish flow.
-- **A letter skill** — say "write the customer a letter" or "turn this into a solution
-  page" and Claude composes a branded, customer-facing **letter** at `taleseal.com/l/…`:
-  a curated solution page, not a transcript. It validates against the block schema,
-  creates a private draft with a DRAFT banner for you to review in the browser, and
-  publishes only after you confirm. Letters are versioned — revising keeps the customer's
-  link stable — and cite their sources in an evidence block instead of carrying receipts.
+- **A letter skill** — say "write them a letter" or "write this up as a page for the
+  client" and Claude composes a branded **letter** at `taleseal.com/l/…` for any
+  recipient outside the session — a customer, a colleague, a friend: a curated,
+  presentable page (a solution, a plan, a write-up), not a transcript. It validates
+  against the block schema, creates a private draft with a DRAFT banner for you to review
+  in the browser, and publishes only after you confirm. Letters are versioned — revising
+  keeps the recipient's link stable — and cite their sources in an evidence block instead
+  of carrying receipts.
 
 All logic lives in the [`taleseal` npm CLI](https://www.npmjs.com/package/taleseal); the
 plugin is a thin, gate-respecting wrapper around it. Nothing is ever published without you

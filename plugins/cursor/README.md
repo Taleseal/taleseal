@@ -13,12 +13,14 @@ wrapper that teaches Cursor's agent when and how to call it.
 - **`skills/sealing`** — the sealing skill. Say "seal this session" and the agent authors
   the story against the CLI's skeleton, shows you the full preview including the redaction
   report, and publishes only after you confirm.
-- **`skills/letter`** — the letter skill. Say "write the customer a letter" and the agent
-  composes a branded, customer-facing **letter** at `taleseal.com/l/…` — a curated
-  solution page with an evidence block instead of receipts. It validates against the block
-  schema, creates a private draft with a DRAFT banner for you to review in the browser,
-  and publishes only after you confirm. Letters are versioned: revising keeps the
-  customer's link stable, and `taleseal letter retract <id>` is the emergency stop.
+- **`skills/letter`** — the letter skill. Say "write them a letter" or "write this up as
+  a page for the client" and the agent composes a branded **letter** at
+  `taleseal.com/l/…` for any recipient outside the session — a customer, a colleague, a
+  friend: a curated, presentable page with an evidence block instead of receipts. It
+  validates against the block schema, creates a private draft with a DRAFT banner for you
+  to review in the browser, and publishes only after you confirm. Letters are versioned:
+  revising keeps the recipient's link stable, and `taleseal letter retract <id>` is the
+  emergency stop.
 - **`agents/tale-polisher`** — optional subagent that drafts a truthful `--title`,
   `--outcome` and `--status` from what actually happened, then previews. It never
   publishes; the main conversation confirms.

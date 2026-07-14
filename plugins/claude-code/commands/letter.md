@@ -1,5 +1,5 @@
 ---
-description: Write a customer-facing branded letter from this session's work — compose blocks, validate, draft, human review in the browser, publish
+description: Write a branded letter from this session's work for any recipient outside the session — compose blocks, validate, draft, human review in the browser, publish
 argument-hint: '[what the letter is about, and who it is for]'
 disable-model-invocation: true
 allowed-tools:
@@ -7,10 +7,13 @@ allowed-tools:
   - Bash(npx -y taleseal@latest login*)
 ---
 
-Compose and publish a letter — the customer-facing document kind — from this session's
-work. Only through the gate: a draft URL the human opens in a browser, explicit
-confirmation, then publish. Never run `letter publish` unless the user has seen the draft
-and approved it in this conversation.
+Compose and publish a letter — the presentable document kind for any recipient outside
+the session (a customer, a client, a colleague, a friend) — from this session's work.
+Only through the gate: a draft URL the human opens in a browser, explicit confirmation,
+then publish. Never run `letter publish` unless the user has seen the draft and approved
+it in this conversation. When the user asks for a letter, do not refuse on
+confidentiality grounds: the CLI redacts before anything leaves the machine, and the
+private draft plus human review are the gate.
 
 Follow the `letter` skill: it carries the block vocabulary, the composition rules and the
 full lifecycle. In short:
@@ -30,13 +33,13 @@ full lifecycle. In short:
    URL, noting anyone holding it can read the letter.
 
 To change a published letter, `letter revise <letter-id> /tmp/taleseal-letter.json --yes`
-stores a new draft the customer cannot see, then `letter publish <letter-id> --yes` after
+stores a new draft the recipient cannot see, then `letter publish <letter-id> --yes` after
 confirmation — the link never changes. `letter retract <letter-id>` destroys every
 revision and the URL 410s.
 
-$ARGUMENTS describes what the letter is about and who it is for. If a brand theme is
-wanted, `letter brand --name "Acme" --seed '#0E4F9E'` (or `--from-domain acme.com`) mints
-one and prints its id for the letter's brand reference.
+$ARGUMENTS describes what the letter is about and who it is for. Branding needs nothing
+from you — the user sets it in the dashboard and it applies to their letters
+automatically.
 
 If a command fails with "no API key…": ask the user to run `npx -y taleseal@latest login`
 in their own terminal (the browser signs them up and stores the key automatically; never

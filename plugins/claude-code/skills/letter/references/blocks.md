@@ -14,7 +14,6 @@ the whole letter is capped at 1 MiB of JSON.
 | `recipient` | string ≤120 | optional greeting line, e.g. "For the Acme platform team" |
 | `sender` | object | required — `{ "name": string 1–120, "org"?: string ≤120 }` |
 | `stationery` | `"letter" \| "terminal" \| "brief" \| "ledger"` | optional, defaults to `"letter"` |
-| `brandRef` | string ≤40 | optional account brand theme id (from `letter brand`) — the body never carries hex or fonts |
 | `sourceRunId` | string ≤80 | optional private back-reference to the run this letter came from; never rendered as a link |
 | `cta` | object | optional footer call to action — `{ "label": string 1–60, "url": http(s) URL ≤2048 }` |
 | `blocks` | array 1–60 | required |

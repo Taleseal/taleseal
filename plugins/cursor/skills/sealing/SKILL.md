@@ -98,10 +98,13 @@ Report the returned URL, noting that anyone holding it can read the tale. Never 
 
 ## Quick seal (no narration)
 
-When the user explicitly wants speed over polish, the old one-step flow still works and is
-gated the same way: `seal --preview [--title … --outcome … --status …]`, confirm, then
-`seal --yes [same flags]`. The result is a mechanical projection — legible, but not a
-story. Prefer the narrated flow whenever the tale is meant to be read by someone else.
+When the user explicitly wants speed over polish, the one-step flow takes `--quick` and
+is gated the same way: `seal --quick --preview [--title … --outcome … --status …]`,
+confirm, then `seal --quick --yes [same flags]`. Without `--quick` the CLI refuses an
+un-narrated seal from an agent session and prints the narrated flow instead — quick is a
+deliberate choice, never a fallback. The result is a mechanical projection — legible, but
+not a story. Prefer the narrated flow whenever the tale is meant to be read by someone
+else.
 
 ## No API key
 

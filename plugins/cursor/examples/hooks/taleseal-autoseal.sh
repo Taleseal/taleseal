@@ -26,7 +26,9 @@ case "$(echo "$input" | jq -r '.final_status // .status // empty')" in
   *) status="partial" ;;
 esac
 
-npx -y taleseal@latest seal --transcript "$transcript" --yes \
+# --quick: a hook has no narrator, so it publishes the mechanical projection
+# deliberately — without the flag the CLI refuses an un-narrated seal here.
+npx -y taleseal@latest seal --quick --transcript "$transcript" --yes \
   --status "$status" --publisher cursor-session-end-hook >/dev/null 2>&1
 
 # A taleseal failure must never wedge the agent.

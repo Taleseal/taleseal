@@ -103,8 +103,9 @@ specification — so today's install paths never move.
 
 ## Security
 
-See [SECURITY.md](./SECURITY.md). The plugins pin an exact `taleseal` npm version — no
-`@latest` — and nothing is published without a human confirming the preview.
+See [SECURITY.md](./SECURITY.md). The plugins track `taleseal@latest` deliberately — the
+API refuses outdated clients, so a pinned plugin would seal nothing — and nothing is
+published without a human confirming the preview.
 
 ## Licence
 

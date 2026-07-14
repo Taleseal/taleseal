@@ -27,9 +27,13 @@ Or from a shell:
 claude plugin marketplace add Taleseal/taleseal && claude plugin install taleseal@taleseal
 ```
 
-The plugin invokes `npx -y taleseal@latest` — the pinned [`taleseal` npm
-package](https://www.npmjs.com/package/taleseal). The version is pinned deliberately; new
-plugin releases bump it.
+The plugin invokes `npx -y taleseal@latest` — the [`taleseal` npm
+package](https://www.npmjs.com/package/taleseal) — so it always seals with the current CLI.
+
+It is deliberately not pinned: taleseal accepts publishes from the latest client only. An
+older CLI composes a thinner tale — it cannot capture what it was never taught to capture —
+and a reader cannot tell a thin tale from an honest one, so a stale client is refused with
+`426 Upgrade Required`. A pin here would be a pin into a wall.
 
 ## First run: the API key
 
@@ -58,7 +62,7 @@ set `TALESEAL_API_KEY`. `taleseal logout` removes the stored key.
 
 You can add a hook so every session is sealed automatically when it ends. Claude Code hooks
 receive JSON on stdin including `transcript_path`. Add this to your `settings.json` yourself
-if you want it (`--yes` is required — hooks are not a TTY):
+if you want it (`--quick --yes` is required — hooks are not a TTY and have no narrator):
 
 ```json
 {
@@ -68,7 +72,7 @@ if you want it (`--yes` is required — hooks are not a TTY):
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r .transcript_path | xargs -I{} npx -y taleseal@latest seal --yes --transcript {}"
+            "command": "jq -r .transcript_path | xargs -I{} npx -y taleseal@latest seal --quick --yes --transcript {}"
           }
         ]
       }

@@ -10,9 +10,9 @@ wrapper that teaches Cursor's agent when and how to call it.
 
 ## What's in the plugin
 
-- **`skills/sealing`** — the sealing skill. Say "seal this session" and the agent runs
-  `seal --cursor --preview`, shows you the full preview including the redaction report,
-  and publishes only after you confirm.
+- **`skills/sealing`** — the sealing skill. Say "seal this session" and the agent authors
+  the story against the CLI's skeleton, shows you the full preview including the redaction
+  report, and publishes only after you confirm.
 - **`agents/tale-polisher`** — optional subagent that drafts a truthful `--title`,
   `--outcome` and `--status` from what actually happened, then previews. It never
   publishes; the main conversation confirms.

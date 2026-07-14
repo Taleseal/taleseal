@@ -1,6 +1,6 @@
 ---
 description: Seal this session as a shareable tale — you narrate it, receipts stay mechanical; preview, confirm, publish, report the URL
-argument-hint: '[--transcript <path>] (or: quick --title "…" --outcome "…" --status succeeded|partial|failed)'
+argument-hint: '[--transcript <path>] (or: --quick --title "…" --outcome "…" --status succeeded|partial|failed)'
 disable-model-invocation: true
 allowed-tools:
   - Bash(npx -y taleseal@latest seal*)
@@ -26,8 +26,10 @@ Follow the `sealing` skill: it carries the full flow and the authoring rules. In
    Report the returned URL, noting anyone holding it can read the tale.
 
 If the user asked for a quick seal (flags like `--title`/`--outcome`/`--status` in
-`$ARGUMENTS`), use the one-step flow instead: `seal --preview $ARGUMENTS`, confirm, then
-`seal --yes $ARGUMENTS`.
+`$ARGUMENTS`), use the one-step flow instead: `seal --quick --preview $ARGUMENTS`,
+confirm, then `seal --quick --yes $ARGUMENTS`. Without `--quick` the CLI refuses an
+un-narrated seal from an agent session and prints the narrated flow instead — quick is
+only for when the user explicitly chooses speed over polish.
 
 If publishing fails with "no API key…": ask the user to run `npx -y taleseal@latest login`
 in their own terminal (the browser signs them up and stores the key automatically; never

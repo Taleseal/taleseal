@@ -1,7 +1,7 @@
 {
   "name": "taleseal",
   "displayName": "Taleseal",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Seal your Claude Code runs as shareable tales. /taleseal:seal previews the composed tale — redaction report included — then publishes it to a short URL once you confirm.",
   "author": {
     "name": "Taleseal",

@@ -14,10 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: No @latest anywhere
+      - name: No floating npm tag anywhere
         run: |
+          # The pattern is split so this file never matches itself — the message below must
+          # keep that property too, or the guard fails on its own source, as it used to.
           if grep -rn 'taleseal@''latest' . --exclude-dir=.git; then
-            echo '::error::taleseal@latest found — pin an exact version'
+            echo '::error::a floating npm tag was found above — pin an exact taleseal version'
             exit 1
           fi
 

@@ -1,8 +1,8 @@
 {
   "name": "taleseal",
   "displayName": "Taleseal",
-  "version": "0.2.1",
-  "description": "Seal your Cursor agent runs as shareable tales. Say \"seal this session\" — the composed tale is previewed, redaction report included, and published to a short URL only after you confirm.",
+  "version": "0.3.0",
+  "description": "Seal your Cursor agent runs as shareable tales. Say \"seal this session\" \u2014 the composed tale is previewed, redaction report included, and published to a short URL only after you confirm.",
   "author": {
     "name": "Taleseal",
     "url": "https://taleseal.com"
@@ -10,5 +10,12 @@
   "homepage": "https://taleseal.com",
   "repository": "https://github.com/Taleseal/taleseal",
   "license": "MIT",
-  "keywords": ["taleseal", "tales", "sharing", "transcripts", "publishing", "agent-runs"]
+  "keywords": [
+    "taleseal",
+    "tales",
+    "sharing",
+    "transcripts",
+    "publishing",
+    "agent-runs"
+  ]
 }

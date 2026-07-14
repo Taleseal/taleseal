@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "title": "Checkout no longer double-charges retried payments",
+  "standfirst": "One race between the payment webhook and the order writer caused every duplicate; the fix serialises them behind the idempotency key.",
+  "recipient": "For your engineering team",
+  "sender": { "name": "Your name", "org": "Your company" },
+  "stationery": "terminal",
+  "cta": { "label": "Book a follow-up", "url": "https://example.com/book" },
+  "blocks": [
+    {
+      "kind": "lead",
+      "text": "The double-charge you reported on retried checkouts is fixed, deployed and verified. The payment provider redelivers webhooks by design; your handler and the order writer both inserted a charge row because neither held the idempotency key. The write now runs under a lock keyed on the event's idempotency key, so a redelivered webhook is a no-op."
+    },
+    {
+      "kind": "heading",
+      "text": "The webhook and the order writer raced"
+    },
+    {
+      "kind": "prose",
+      "markdown": "When a checkout succeeded but the acknowledgement timed out, the provider redelivered the event. The original delivery and the retry then ran the same insert concurrently. The unique constraint you expected to catch this was on the order id, not the charge event id, so **both writes succeeded** and the customer was charged twice."
+    },
+    {
+      "kind": "code",
+      "language": "ts",
+      "filename": "src/payments/webhook.ts",
+      "code": "export async function onChargeSucceeded(event: ChargeEvent): Promise<void> {\n  const key = idempotencyKey(event);\n  await withLock(key, async () => {\n    if (await chargeExists(key)) return;\n    await writeOrderCharge(event, key);\n  });\n}",
+      "caption": "The handler after the fix: the existence check and the write share one lock.",
+      "highlightLines": [3, 4]
+    },
+    {
+      "kind": "heading",
+      "text": "The change, exactly"
+    },
+    {
+      "kind": "diff",
+      "filePath": "src/payments/webhook.ts",
+      "hunks": [
+        {
+          "oldStart": 14,
+          "oldLines": 2,
+          "newStart": 14,
+          "newLines": 5,
+          "lines": [
+            " const key = idempotencyKey(event);",
+            "-await writeOrderCharge(event, key);",
+            "+await withLock(key, async () => {",
+            "+  if (await chargeExists(key)) return;",
+            "+  await writeOrderCharge(event, key);",
+            "+});"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "stat_tiles",
+      "title": "Since the deploy",
+      "tiles": [
+        { "label": "duplicate charges", "value": "0", "delta": "was 41/day", "tone": "good" },
+        { "label": "webhook retries handled", "value": "312", "tone": "flat" },
+        { "label": "p95 checkout", "value": "318 ms", "delta": "+6 ms", "tone": "flat" }
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "note",
+      "title": "One follow-up on your side",
+      "body": "The charge table now also carries a unique index on the event's idempotency key as a second line of defence. If you replay historical events into staging, expect conflicts on the 41 duplicates from before the fix — they are safe to skip."
+    },
+    { "kind": "divider" },
+    {
+      "kind": "evidence",
+      "title": "What we consulted",
+      "items": [
+        {
+          "kind": "web",
+          "name": "Stripe — webhook delivery behaviour",
+          "url": "https://docs.stripe.com/webhooks",
+          "snippet": "Webhook endpoints might occasionally receive the same event more than once."
+        },
+        {
+          "kind": "repo",
+          "name": "payments-service",
+          "note": "handler history reviewed back to the commit that introduced the concurrent write path"
+        },
+        {
+          "kind": "doc",
+          "name": "Your incident channel export",
+          "snippet": "Order #48211 charged twice, customer refunded manually.",
+          "note": "the report that triggered the investigation"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "title": "The 14 March outage: what failed, what we changed, what remains",
+  "standfirst": "A queue drained into an unindexed table for 47 minutes; reads timed out downstream. Full account and the remediation plan.",
+  "recipient": "For your leadership and platform teams",
+  "sender": { "name": "Your name", "org": "Your company" },
+  "stationery": "ledger",
+  "blocks": [
+    {
+      "kind": "lead",
+      "text": "On 14 March your service was degraded for 47 minutes. A backlog of retried jobs drained into a table whose covering index had been dropped by an unrelated migration the night before, and every read against it queued behind full scans. No data was lost and no writes were dropped; the customer-visible effect was timeouts on the reporting screens. The index is restored, the migration pipeline now refuses to drop an index that a live query plan depends on, and two follow-ups remain on your side."
+    },
+    {
+      "kind": "heading",
+      "text": "Forty-seven minutes, minute by minute"
+    },
+    {
+      "kind": "timeline",
+      "items": [
+        {
+          "at": "02:12",
+          "title": "Nightly migration drops the covering index",
+          "body": "The migration was reviewed and correct for its own table; the dropped index was believed unused because the query that needed it only runs during business hours."
+        },
+        {
+          "at": "09:03",
+          "title": "Reporting queries start full-scanning",
+          "body": "First business-hours reads arrive; each takes 40x its usual time and holds a connection."
+        },
+        {
+          "at": "09:18",
+          "title": "Connection pool exhausts; alerts fire",
+          "body": "Downstream services time out. On-call is paged."
+        },
+        {
+          "at": "09:31",
+          "title": "Root cause identified",
+          "body": "The plan diff pointed at the missing index rather than the queue backlog everyone suspected first."
+        },
+        {
+          "at": "09:50",
+          "title": "Index rebuilt online; service recovers",
+          "body": "p95 read latency back to baseline within four minutes of the rebuild finishing."
+        }
+      ]
+    },
+    {
+      "kind": "stat_tiles",
+      "title": "Impact",
+      "tiles": [
+        { "label": "degraded", "value": "47 min", "tone": "bad" },
+        { "label": "data lost", "value": "0 rows", "tone": "good" },
+        { "label": "failed requests", "value": "8,420", "tone": "bad" }
+      ]
+    },
+    {
+      "kind": "heading",
+      "text": "Why the safeguard missed it"
+    },
+    {
+      "kind": "prose",
+      "markdown": "The migration checklist asks whether an index is used, and the author checked — but the usage view only covered the previous six hours, all of them overnight. The gap was not carelessness; it was a tool that answers *is this used right now* when the real question is *is this ever used*. The pipeline now compares against thirty days of recorded query plans before allowing a drop."
+    },
+    {
+      "kind": "callout",
+      "tone": "success",
+      "title": "Already in place",
+      "body": "Index restored (09:50, day of), thirty-day plan-history check merged into the migration pipeline, and a connection-pool circuit breaker so one slow table can no longer exhaust the pool for every caller."
+    },
+    { "kind": "divider" },
+    {
+      "kind": "heading",
+      "text": "What remains, and who holds it"
+    },
+    {
+      "kind": "checklist",
+      "items": [
+        {
+          "text": "Approve the read-replica for reporting queries so business-hours scans never share the primary's pool",
+          "owner": "your platform team",
+          "due": "31 March"
+        },
+        {
+          "text": "Review the alert threshold that let the pool sit at 90% for eleven minutes before paging",
+          "owner": "your on-call rota owner",
+          "due": "24 March"
+        },
+        {
+          "text": "Confirm the two reporting screens rebuilt during the incident render correctly for your largest account"
+        }
+      ]
+    },
+    {
+      "kind": "evidence",
+      "title": "Sources for this account",
+      "items": [
+        {
+          "kind": "doc",
+          "name": "Incident channel export, 14 March",
+          "note": "timestamps above are taken directly from the paging and chat record"
+        },
+        {
+          "kind": "dataset",
+          "name": "Query plan history, 12 Feb – 14 Mar",
+          "note": "establishes the dropped index was used every business day"
+        },
+        {
+          "kind": "web",
+          "name": "PostgreSQL — building indexes concurrently",
+          "url": "https://www.postgresql.org/docs/current/sql-createindex.html",
+          "snippet": "PostgreSQL supports building indexes without locking out writes."
+        }
+      ]
+    }
+  ]
+}

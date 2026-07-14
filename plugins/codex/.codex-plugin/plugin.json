@@ -1,7 +1,7 @@
 {
   "name": "taleseal",
-  "version": "0.2.1",
-  "description": "Seal a Codex run as a shareable tale — preview, confirm, publish, report the URL.",
+  "version": "0.3.0",
+  "description": "Seal a Codex run as a shareable tale \u2014 preview, confirm, publish, report the URL.",
   "author": {
     "name": "Taleseal",
     "url": "https://taleseal.com"
@@ -9,7 +9,15 @@
   "homepage": "https://taleseal.com",
   "repository": "https://github.com/Taleseal/taleseal",
   "license": "MIT",
-  "keywords": ["taleseal", "tale", "seal", "share", "transcript", "session", "publish"],
+  "keywords": [
+    "taleseal",
+    "tale",
+    "seal",
+    "share",
+    "transcript",
+    "session",
+    "publish"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Taleseal",
@@ -17,7 +25,9 @@
     "longDescription": "Turn the current Codex session into a shareable tale at a short URL: compose a local preview (title, status, beats, receipts, redaction report), show it to you, and publish only after you confirm. Failed and abandoned runs are first-class tales too.",
     "developerName": "Taleseal",
     "category": "Productivity",
-    "capabilities": ["Read"],
+    "capabilities": [
+      "Read"
+    ],
     "websiteURL": "https://taleseal.com"
   }
 }

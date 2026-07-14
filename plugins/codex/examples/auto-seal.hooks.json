@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r .transcript_path | xargs -I{} npx -y taleseal@0.3.0 seal --transcript {} --yes --publisher codex-stop-hook"
+            "command": "jq -r .transcript_path | xargs -I{} npx -y taleseal@latest seal --transcript {} --yes --publisher codex-stop-hook"
           }
         ]
       }

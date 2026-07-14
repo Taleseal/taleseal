@@ -1,7 +1,7 @@
 #!/bin/bash
 # Auto-seal the finished Cursor session as a tale. Publishes UNSEEN (--yes):
 # only install this if you accept the redaction report without previewing it.
-# Undo is `npx -y taleseal@0.3.0 retract --run <session id>`.
+# Undo is `npx -y taleseal@latest retract --run <session id>`.
 # Requires jq.
 #
 # Wired to sessionEnd because that is the event cursor-agent (the CLI) actually
@@ -26,7 +26,7 @@ case "$(echo "$input" | jq -r '.final_status // .status // empty')" in
   *) status="partial" ;;
 esac
 
-npx -y taleseal@0.3.0 seal --transcript "$transcript" --yes \
+npx -y taleseal@latest seal --transcript "$transcript" --yes \
   --status "$status" --publisher cursor-session-end-hook >/dev/null 2>&1
 
 # A taleseal failure must never wedge the agent.

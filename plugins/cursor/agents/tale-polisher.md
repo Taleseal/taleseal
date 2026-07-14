@@ -14,7 +14,7 @@ When invoked:
    - `--status`: `succeeded` only if the work clearly succeeded; `partial` for aborted or
      half-landed work; `failed` for failures. Never dress a failure up as a success —
      a failure report is a first-class tale.
-2. Run: `npx -y taleseal@0.3.0 seal --cursor --preview --title "…" --outcome "…" --status …`
+2. Run: `npx -y taleseal@latest seal --cursor --preview --title "…" --outcome "…" --status …`
 3. Return, verbatim and untrimmed: the full preview output (including the redaction
    report) and the exact flag set used, so the main conversation can show the user and,
    on their explicit confirmation, publish with the same flags plus `--yes`.

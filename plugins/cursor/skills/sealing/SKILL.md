@@ -6,20 +6,20 @@ description: Seal the current Cursor agent session as a shareable published tale
 # Sealing a session as a tale
 
 A tale is the published, shareable narrative of one agent run — title, beats, receipts —
-readable by anyone holding its URL. The CLI is `npx -y taleseal@0.3.0` (plain Node, no
+readable by anyone holding its URL. The CLI is `npx -y taleseal@latest` (plain Node, no
 install). `seal --cursor` picks the newest Cursor transcript on this machine, which in a
 live session is usually the session itself — if several Cursor windows are open, confirm
 the pick with the user, or pin an explicit path with `--transcript <path>`.
 
 ## The flow — preview, confirm, publish
 
-1. Run `npx -y taleseal@0.3.0 seal --cursor --preview [flags]` — local only, no key
+1. Run `npx -y taleseal@latest seal --cursor --preview [flags]` — local only, no key
    needed. Show the user the entire output verbatim, including the redaction report.
    Never skip or summarise this step: secrets travel nowhere without a human seeing what
    the scrubber caught.
 2. Ask the user: publish as previewed, adjust flags first, or cancel. If flags change,
    re-preview.
-3. On explicit confirmation only, run `npx -y taleseal@0.3.0 seal --cursor --yes [same
+3. On explicit confirmation only, run `npx -y taleseal@latest seal --cursor --yes [same
    flags]` and report the returned URL, noting that anyone holding it can read the tale.
    `--yes` is required because this shell is not a TTY; it is legitimate only because the
    user has just seen this exact composition's preview and said yes.
@@ -37,7 +37,7 @@ the pick with the user, or pin an explicit path with `--transcript <path>`.
 ## No API key
 
 Publishing fails with "no API key…". The fix happens in the user's own terminal, not in
-this session: ask them to run `npx -y taleseal@0.3.0 login` — the browser opens, signs
+this session: ask them to run `npx -y taleseal@latest login` — the browser opens, signs
 them up on the way if needed, and stores the key automatically (nothing to copy or
 paste). On CI, they mint a key at https://taleseal.com/dashboard and set
 `TALESEAL_API_KEY`. Never ask for a key in chat — transcripts are exactly what gets

@@ -1,7 +1,7 @@
 {
   "name": "taleseal",
   "displayName": "Taleseal",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Seal your Claude Code runs as shareable tales. /taleseal:seal previews the composed tale — redaction report included — then publishes it to a short URL once you confirm.",
   "author": {
     "name": "Taleseal",
@@ -10,5 +10,12 @@
   "homepage": "https://taleseal.com",
   "repository": "https://github.com/Taleseal/taleseal",
   "license": "MIT",
-  "keywords": ["taleseal", "tales", "sharing", "transcripts", "publishing", "agent-runs"]
+  "keywords": [
+    "taleseal",
+    "tales",
+    "sharing",
+    "transcripts",
+    "publishing",
+    "agent-runs"
+  ]
 }

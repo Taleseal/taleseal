@@ -27,9 +27,13 @@ Or from a shell:
 claude plugin marketplace add Taleseal/taleseal && claude plugin install taleseal@taleseal
 ```
 
-The plugin invokes `npx -y taleseal@0.3.0` — the pinned [`taleseal` npm
-package](https://www.npmjs.com/package/taleseal). The version is pinned deliberately; new
-plugin releases bump it.
+The plugin invokes `npx -y taleseal@latest` — the [`taleseal` npm
+package](https://www.npmjs.com/package/taleseal) — so it always seals with the current CLI.
+
+It is deliberately not pinned: taleseal accepts publishes from the latest client only. An
+older CLI composes a thinner tale — it cannot capture what it was never taught to capture —
+and a reader cannot tell a thin tale from an honest one, so a stale client is refused with
+`426 Upgrade Required`. A pin here would be a pin into a wall.
 
 ## First run: the API key
 
@@ -37,7 +41,7 @@ Previews need no account — `/taleseal:seal` shows you the composed tale either
 Publishing needs an API key, set up once, in your own terminal:
 
 ```sh
-npx -y taleseal@0.3.0 login
+npx -y taleseal@latest login
 ```
 
 The browser opens: approve there — signing up on the way if needed — and a key is created
@@ -68,7 +72,7 @@ if you want it (`--yes` is required — hooks are not a TTY):
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r .transcript_path | xargs -I{} npx -y taleseal@0.3.0 seal --yes --transcript {}"
+            "command": "jq -r .transcript_path | xargs -I{} npx -y taleseal@latest seal --yes --transcript {}"
           }
         ]
       }

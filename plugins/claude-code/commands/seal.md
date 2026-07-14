@@ -3,21 +3,21 @@ description: Seal this session as a shareable tale — preview, confirm, publish
 argument-hint: '[--title "…"] [--outcome "…"] [--status succeeded|partial|failed]'
 disable-model-invocation: true
 allowed-tools:
-  - Bash(npx -y taleseal@0.3.0 seal*)
-  - Bash(npx -y taleseal@0.3.0 login*)
+  - Bash(npx -y taleseal@latest seal*)
+  - Bash(npx -y taleseal@latest login*)
 ---
 
 Publish the current session as a tale — but only through the gate: preview first, explicit
 confirmation, then publish. Never run `seal --yes` unless the user has seen the preview in
 this conversation and approved it.
 
-The CLI is `npx -y taleseal@0.3.0`.
+The CLI is `npx -y taleseal@latest`.
 
 ## 1. Preview
 
 Run from the project directory:
 
-    npx -y taleseal@0.3.0 seal --preview $ARGUMENTS
+    npx -y taleseal@latest seal --preview $ARGUMENTS
 
 This composes the tale from the newest transcript for this directory, entirely locally —
 nothing is published and no key is needed. Show the user the full output **verbatim**: title,
@@ -43,7 +43,7 @@ If flags change, return to step 1 and show the new preview.
 
 Only after the user has confirmed the previewed composition:
 
-    npx -y taleseal@0.3.0 seal --yes <exactly the flags that were previewed>
+    npx -y taleseal@latest seal --yes <exactly the flags that were previewed>
 
 `--yes` is required because this shell is not a TTY; it is legitimate here only because the
 user has just seen this composition's preview and said yes. Report the returned tale URL, and
@@ -55,13 +55,13 @@ Publishing fails with "no API key — TALESEAL_API_KEY is unset…". Signing in 
 but it needs the user's own terminal (this shell is not a TTY, and the login opens a
 browser). Walk the user through it, then retry:
 
-1. Ask the user to run `npx -y taleseal@0.3.0 login` in their own terminal. The browser
+1. Ask the user to run `npx -y taleseal@latest login` in their own terminal. The browser
    opens; they approve there — signing up on the way if needed — and a key is created and
    stored at `~/.config/taleseal/config.json` (mode 0600) automatically. Nothing to copy or
    paste. Works over SSH too: they open the printed URL on any device and match the code.
 2. Only for CI or a machine with no browser anywhere: mint a key by hand at
    https://taleseal.com/dashboard and set `TALESEAL_API_KEY`, or run
-   `npx -y taleseal@0.3.0 login --key tk_…`. Never paste a key into this conversation —
+   `npx -y taleseal@latest login --key tk_…`. Never paste a key into this conversation —
    transcripts are exactly what gets sealed.
 3. Once the user says they are signed in, retry step 3 if the preview was already
    confirmed; otherwise start again at step 1.

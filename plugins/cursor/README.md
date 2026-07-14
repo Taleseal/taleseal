@@ -5,7 +5,7 @@ readable by anyone holding its URL. All logic lives in the
 [`taleseal` npm CLI](https://www.npmjs.com/package/taleseal); this plugin is a thin
 wrapper that teaches Cursor's agent when and how to call it.
 
-> Status: pre-release. Ships with `taleseal@0.3.0` (the first CLI release with the
+> Status: pre-release. Ships with `taleseal@latest` (the first CLI release with the
 > Cursor transcript reader). Not yet listed on the Cursor Marketplace.
 
 ## What's in the plugin
@@ -30,7 +30,7 @@ CLI runs can load it with `cursor-agent --plugin-dir <path-to>/plugins/cursor`.
 
 ## Auth
 
-First publish needs a key: run `npx -y taleseal@0.3.0 login` in your own terminal — the
+First publish needs a key: run `npx -y taleseal@latest login` in your own terminal — the
 browser opens, signs you up on the way if needed, and stores the key automatically.
 Previews need no key. Never paste keys into an agent chat.
 

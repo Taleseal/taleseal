@@ -1,8 +1,31 @@
+<p align="center">
+  <a href="https://taleseal.com"><img src="./assets/readme-banner.png" alt="taleseal — no tale, didn't happen. One command seals an agent run as a page anyone can read." width="1200"></a>
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/taleseal"><img src="https://img.shields.io/npm/v/taleseal?label=taleseal&color=c13521" alt="npm: taleseal"></a>
+  <a href="https://www.npmjs.com/package/@taleseal/sdk"><img src="https://img.shields.io/npm/v/%40taleseal%2Fsdk?label=%40taleseal%2Fsdk&color=c13521" alt="npm: @taleseal/sdk"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/licence-MIT-1c1b18" alt="licence: MIT"></a>
+</p>
+
+<p align="center">
+  <a href="https://taleseal.com/t/example">example tale</a> ·
+  <a href="https://taleseal.com/start">get started</a> ·
+  <a href="https://taleseal.com/integrate">integrate</a> ·
+  <a href="https://taleseal.com/pricing">pricing (free)</a> ·
+  <a href="https://taleseal.com/security">security &amp; trust</a>
+</p>
+
 # taleseal
 
 Seal an agent run as a shareable **tale** — the narrative of what the agent did (trigger →
 data consumed → decisions taken and set aside → outcome), published to one short, unguessable
-URL. Anyone with the link can read how the agent got there; nobody needs an account to view.
+URL. Plain English on top, the commands, diffs and test output underneath. Anyone with the
+link can read how the agent got there; nobody needs an account to view.
+
+```sh
+npx taleseal seal      # reads the newest session locally, shows a preview, waits for your yes
+```
 
 This repository holds the official plugin marketplaces for [taleseal.com](https://taleseal.com).
 All capture, redaction and publishing logic lives in the
@@ -45,9 +68,9 @@ Coming — see [`plugins/cursor/`](./plugins/cursor).
 
 ## First run
 
-Previews need no account. Publishing needs an API key: sign up at
-[taleseal.com/signup](https://taleseal.com/signup), mint a key in the dashboard, then run
-`npx -y taleseal@0.1.0 login`.
+Previews need no account. Publishing needs an API key: `npx -y taleseal login` opens the
+browser, signs you up on the way if needed, and stores the key on your machine. On CI, mint
+a key in the [dashboard](https://taleseal.com/dashboard) and set `TALESEAL_API_KEY`.
 
 ## Distributing to a team (Claude Code)
 

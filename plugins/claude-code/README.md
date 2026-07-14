@@ -27,22 +27,24 @@ Or from a shell:
 claude plugin marketplace add Taleseal/taleseal && claude plugin install taleseal@taleseal
 ```
 
-The plugin invokes `npx -y taleseal@0.1.0` — the pinned [`taleseal` npm
+The plugin invokes `npx -y taleseal@0.3.0` — the pinned [`taleseal` npm
 package](https://www.npmjs.com/package/taleseal). The version is pinned deliberately; new
 plugin releases bump it.
 
 ## First run: the API key
 
 Previews need no account — `/taleseal:seal` shows you the composed tale either way.
-Publishing needs an API key, set up once:
+Publishing needs an API key, set up once, in your own terminal:
 
-1. Sign up at https://taleseal.com/signup.
-2. Mint an API key in the dashboard.
-3. Run `npx -y taleseal@0.1.0 login` and paste the key when prompted.
+```sh
+npx -y taleseal@0.3.0 login
+```
 
-The key is validated against the server and stored at `~/.config/taleseal/config.json`
-(mode 0600). If you skip this, `/taleseal:seal` walks you through it the first time you
-confirm a publish. `taleseal logout` removes the key.
+The browser opens: approve there — signing up on the way if needed — and a key is created
+and stored at `~/.config/taleseal/config.json` (mode 0600) automatically. Nothing to copy
+or paste. If you skip this, `/taleseal:seal` walks you through it the first time you
+confirm a publish. On CI, mint a key in the [dashboard](https://taleseal.com/dashboard) and
+set `TALESEAL_API_KEY`. `taleseal logout` removes the stored key.
 
 ## Usage
 
@@ -66,7 +68,7 @@ if you want it (`--yes` is required — hooks are not a TTY):
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r .transcript_path | xargs -I{} npx -y taleseal@0.1.0 seal --yes --transcript {}"
+            "command": "jq -r .transcript_path | xargs -I{} npx -y taleseal@0.3.0 seal --yes --transcript {}"
           }
         ]
       }

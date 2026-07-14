@@ -10,7 +10,7 @@ explicit confirmation from the user, then publish. **Never run `seal --yes` unle
 has seen the preview in this conversation and approved it.** Transcripts can carry secrets;
 the preview's redaction report is the whole point of the gate.
 
-The CLI is `npx -y taleseal@0.1.0` (plain Node, no install).
+The CLI is `npx -y taleseal@0.3.0` (plain Node, no install).
 
 ## 1. Resolve the transcript
 
@@ -30,7 +30,7 @@ preview and publish honest about which run they refer to.)
 ## 2. Preview
 
 ```bash
-npx -y taleseal@0.1.0 seal --transcript <path> --preview
+npx -y taleseal@0.3.0 seal --transcript <path> --preview
 ```
 
 This composes the tale entirely locally — nothing is published and no key is needed. Show
@@ -57,7 +57,7 @@ If flags change, return to step 2 and show the new preview.
 Only after the user has confirmed the previewed composition:
 
 ```bash
-npx -y taleseal@0.1.0 seal --transcript <path> --yes <exactly the flags that were previewed>
+npx -y taleseal@0.3.0 seal --transcript <path> --yes <exactly the flags that were previewed>
 ```
 
 `--yes` is required because this shell is not a TTY; it is legitimate here only because the
@@ -66,11 +66,17 @@ and note that anyone holding the URL can read the tale.
 
 ## 5. If there is no API key
 
-Publishing fails with "no API key — TALESEAL_API_KEY is unset…". Walk the user through
-setup, then retry:
+Publishing fails with "no API key — TALESEAL_API_KEY is unset…". Signing in is one command,
+but it needs the user's own terminal (this shell is not a TTY, and the login opens a
+browser). Walk the user through it, then retry:
 
-1. Sign up at https://taleseal.com/signup and mint an API key in the dashboard.
-2. Store the key: the user runs `npx -y taleseal@0.1.0 login` in their own terminal and
-   pastes the key at the prompt (or passes `--key tk_…` non-interactively). The key is
-   validated against the server and stored at `~/.config/taleseal/config.json` (mode 0600).
-3. Retry step 4 if the preview was already confirmed; otherwise start again at step 2.
+1. Ask the user to run `npx -y taleseal@0.3.0 login` in their own terminal. The browser
+   opens; they approve there — signing up on the way if needed — and a key is created and
+   stored at `~/.config/taleseal/config.json` (mode 0600) automatically. Nothing to copy
+   or paste. Works over SSH too: they open the printed URL on any device and match the code.
+2. Only for CI or a machine with no browser anywhere: mint a key by hand at
+   https://taleseal.com/dashboard and set `TALESEAL_API_KEY`, or run
+   `npx -y taleseal@0.3.0 login --key tk_…`. Never paste a key into this conversation —
+   transcripts are exactly what gets sealed.
+3. Once the user says they are signed in, retry step 4 if the preview was already
+   confirmed; otherwise start again at step 2.

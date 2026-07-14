@@ -1,82 +1,113 @@
 ---
 name: sealing
-description: Seal the current Codex session as a shareable tale — preview, confirm, publish, report the URL. Use when the user asks to seal, share, or publish this session, run, or conversation as a tale or a link.
+description: Seal the current Codex session as a shareable published tale via the taleseal CLI. Use when the user says "seal this", "seal this session", "publish a tale", "share what this run did", or wants a shareable link to what happened in a session. You author the narrative against the CLI's skeleton; receipts stay mechanical; a redaction preview gates every publish.
 ---
 
-# Sealing a tale
+# Sealing a session as a tale
 
-Publish the current Codex session as a tale — but only through the gate: preview first,
-explicit confirmation from the user, then publish. **Never run `seal --yes` unless the user
-has seen the preview in this conversation and approved it.** Transcripts can carry secrets;
-the preview's redaction report is the whole point of the gate.
+A tale is the published, shareable narrative of one agent run, readable by anyone holding
+its URL. It has two layers with different owners:
 
-The CLI is `npx -y taleseal@latest` (plain Node, no install).
+- **Receipts** (commands, test output, diffs, metrics) are extracted mechanically by the
+  CLI from the transcript. You cannot add to them — that is what keeps a tale honest.
+- **The narrative** (title, verdict, chapters, decisions) is YOURS to write. You were the
+  session; you know what mattered. A machine projection of the transcript reads like a
+  log file — your job is to write the story a person who was not there can actually read.
 
-## 1. Resolve the transcript
+The CLI is `npx -y taleseal@latest` (plain Node, no install). Codex writes each session as
+rollout JSONL under `~/.codex/sessions/YYYY/MM/DD/`; `--codex` picks the newest rollout,
+which in a live session is usually the session itself. If several Codex windows are open,
+pin an explicit path with `--transcript <path>` so the skeleton, preview and publish all
+refer to the same run.
 
-Codex writes each session as rollout JSONL under `~/.codex/sessions/YYYY/MM/DD/`. The
-current session is the newest rollout. Pin it to a concrete path so the same file is
-previewed and published:
+## The flow — skeleton, story, preview, confirm, publish
 
-```bash
-ls -t ~/.codex/sessions/*/*/*/rollout-*.jsonl | head -1
-```
-
-If several Codex windows are open, the newest file may belong to another session — confirm
-the pick with the user if in doubt, or let them name a specific rollout. (`seal --codex`
-does the same newest-rollout discovery in one flag, but pinning an explicit path keeps
-preview and publish honest about which run they refer to.)
-
-## 2. Preview
+### 1. Get the skeleton
 
 ```bash
-npx -y taleseal@latest seal --transcript <path> --preview
+npx -y taleseal@latest seal --codex --skeleton /tmp/taleseal-skeleton.json
 ```
 
-This composes the tale entirely locally — nothing is published and no key is needed. Show
-the user the full output **verbatim**: title, status, beats, receipts, and the redaction
-report. Do not summarise or trim it; seeing exactly what would become public is the point.
+Local only, no key needed. The file holds the run's step groups (`s1`, `s2`, …), each with
+its receipts already extracted and redacted, plus a `digest`. Read it.
 
-## 3. Confirm
+### 2. Author the story
 
-Ask the user whether to publish, offering:
+Write a story JSON (e.g. `/tmp/taleseal-story.json`):
 
-- **Publish** — exactly as previewed.
-- **Adjust first** — set flags, then re-preview:
-  - `--title "…"` when the session drifted from the task it opened with;
-  - `--outcome "…"` for the verdict — a transcript has no conclusion of its own;
-  - `--status succeeded|partial|failed` — honest, always. A failed or abandoned run is a
-    first-class tale; if this session did not clearly succeed, suggest `partial` or
-    `failed` yourself. Never dress a failure up as a success.
-- **Cancel** — nothing leaves the machine.
+```json
+{
+  "version": 1,
+  "skeletonDigest": "<the skeleton's digest field>",
+  "title": "What the run achieved, as a statement",
+  "status": "succeeded | partial | failed",
+  "outcome": "The executive summary — 2 to 4 sentences a layman reads first.",
+  "beats": [
+    {
+      "steps": ["s1", "s2"],
+      "title": "A chapter title that states what happened",
+      "prose": "Plain-language prose. What was done, what was found, why it mattered.",
+      "decisions": [{ "title": "…", "state": "chosen | set_aside", "why": "…" }],
+      "widgets": [{ "kind": "stat_tiles", "tiles": [{ "label": "tests", "value": "42" }] }]
+    }
+  ]
+}
+```
 
-If flags change, return to step 2 and show the new preview.
+**Authoring rules — the merge enforces most of these, so getting them right first saves a
+round trip:**
 
-## 4. Publish
+- **5–12 chapters** for a typical session (hard cap 40). Every group id from the skeleton
+  must appear **exactly once, in order**, across `beats[].steps` — fold quiet stretches
+  into a neighbouring chapter rather than dropping them. The CLI refuses a story that
+  drops, invents, duplicates or reorders work.
+- **Write for a reader who was not there.** No tool names in prose ("checked the failing
+  test", never "ran Bash"), no session jargon, no shorthand you invented mid-run. Each
+  chapter: what happened and why it mattered, 2–6 sentences.
+- **The verdict is the product.** `outcome` is what a reader takes away — write it last,
+  write it plainly, and make `status` honest: a failed run publishes as `failed`. Never
+  dress a failure up as a success.
+- **Record decisions.** Wherever the session weighed options, fill `decisions[]` — the
+  paths set aside and why are precisely what a reviewer cannot get from the diff.
+- **Widgets only from receipts.** A `stat_tiles` or `table` widget may carry only numbers
+  that appear in the skeleton's receipts or metrics. Never invent a figure.
+- **Star out personal context.** The scrubber removes secrets, but only you can judge
+  personal context: emails you quote become `g***@example.com`, home-directory paths
+  become `~/…`, client names stay out unless the user says otherwise.
 
-Only after the user has confirmed the previewed composition:
+### 3. Preview
 
 ```bash
-npx -y taleseal@latest seal --transcript <path> --yes <exactly the flags that were previewed>
+npx -y taleseal@latest seal --story /tmp/taleseal-story.json --skeleton /tmp/taleseal-skeleton.json --preview
 ```
 
-`--yes` is required because this shell is not a TTY; it is legitimate here only because the
-user has just seen this composition's preview and said yes. Report the returned tale URL,
-and note that anyone holding the URL can read the tale.
+Show the user the entire output verbatim, including the redaction and exposure report.
+This step is never skipped: secrets travel nowhere without a human seeing what the
+scrubber caught. If the CLI refuses the story, fix what it names and re-preview.
 
-## 5. If there is no API key
+### 4. Confirm, then publish
 
-Publishing fails with "no API key — TALESEAL_API_KEY is unset…". Signing in is one command,
-but it needs the user's own terminal (this shell is not a TTY, and the login opens a
-browser). Walk the user through it, then retry:
+Ask the user: publish as previewed, adjust the story first, or cancel. If the
+story changes, re-preview. On explicit confirmation only:
 
-1. Ask the user to run `npx -y taleseal@latest login` in their own terminal. The browser
-   opens; they approve there — signing up on the way if needed — and a key is created and
-   stored at `~/.config/taleseal/config.json` (mode 0600) automatically. Nothing to copy
-   or paste. Works over SSH too: they open the printed URL on any device and match the code.
-2. Only for CI or a machine with no browser anywhere: mint a key by hand at
-   https://taleseal.com/dashboard and set `TALESEAL_API_KEY`, or run
-   `npx -y taleseal@latest login --key tk_…`. Never paste a key into this conversation —
-   transcripts are exactly what gets sealed.
-3. Once the user says they are signed in, retry step 4 if the preview was already
-   confirmed; otherwise start again at step 2.
+```bash
+npx -y taleseal@latest seal --story /tmp/taleseal-story.json --skeleton /tmp/taleseal-skeleton.json --yes
+```
+
+Report the returned URL, noting that anyone holding it can read the tale. Never run
+`--yes` without a confirmed preview of the same composition in this conversation.
+
+## Quick seal (no narration)
+
+When the user explicitly wants speed over polish, the old one-step flow still works and is
+gated the same way: `seal --preview [--title … --outcome … --status …]`, confirm, then
+`seal --yes [same flags]`. The result is a mechanical projection — legible, but not a
+story. Prefer the narrated flow whenever the tale is meant to be read by someone else.
+
+## No API key
+
+Publishing fails with "no API key…". The fix happens in the user's own terminal, not in
+this session: ask them to run `npx -y taleseal@latest login` — the browser opens, signs
+them up on the way if needed, and stores the key automatically (nothing to copy or paste).
+On CI, they mint a key at https://taleseal.com/dashboard and set `TALESEAL_API_KEY`. Never
+ask for a key in chat — transcripts are exactly what gets sealed. Previews need no key.

@@ -27,13 +27,9 @@ Or from a shell:
 claude plugin marketplace add Taleseal/taleseal && claude plugin install taleseal@taleseal
 ```
 
-The plugin invokes `npx -y taleseal@latest` — the [`taleseal` npm
-package](https://www.npmjs.com/package/taleseal) — so it always seals with the current CLI.
-
-It is deliberately not pinned: taleseal accepts publishes from the latest client only. An
-older CLI composes a thinner tale — it cannot capture what it was never taught to capture —
-and a reader cannot tell a thin tale from an honest one, so a stale client is refused with
-`426 Upgrade Required`. A pin here would be a pin into a wall.
+The plugin invokes `npx -y taleseal@latest` — the pinned [`taleseal` npm
+package](https://www.npmjs.com/package/taleseal). The version is pinned deliberately; new
+plugin releases bump it.
 
 ## First run: the API key
 

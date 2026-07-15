@@ -32,10 +32,15 @@ full lifecycle. In short:
    confirmation: `npx -y taleseal@latest letter publish <letter-id> --yes`. Report the
    URL, noting anyone holding it can read the letter.
 
-To change a published letter, `letter revise <letter-id> /tmp/taleseal-letter.json --yes`
-stores a new draft the recipient cannot see, then `letter publish <letter-id> --yes` after
-confirmation — the link never changes. `letter retract <letter-id>` destroys every
-revision and the URL 410s.
+To change an existing letter, edit its draft rather than starting over. Block by block is
+the lighter touch: `letter outline <letter-id>` for the block ids and the `draftSeq`, then
+`letter ops` (or `insert` / `replace` / `remove` / `move` / `set-envelope`) echoing that
+`draftSeq` as `--base` — a stale base is a conflict that hands back the outline to re-base
+on. Or replace the whole body: from a fresh session `letter pull <letter-id> letter.json`
+first, then `letter revise <letter-id> /tmp/taleseal-letter.json --yes`. Either way the
+recipient keeps seeing the published revision, and `letter publish <letter-id> --yes` runs
+only after the human reviews — the link never changes. `letter retract <letter-id>`
+destroys every revision and the URL 410s.
 
 $ARGUMENTS describes what the letter is about and who it is for. Branding needs nothing
 from you — the user sets it in the dashboard and it applies to their letters

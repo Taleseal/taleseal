@@ -18,7 +18,18 @@ verify the sources say what the letter says.
 The CLI is `npx -y taleseal@latest letter <subcommand>`. Running it bare prints the full
 usage — the refusal is the documentation.
 
-## The flow — compose, validate, draft, human review, publish
+There are three ways in, and all of them end at the same gate:
+
+- **Compose a new letter** from this session's work — the primary path below.
+- **Edit an existing draft** block by block, when a draft already exists and you want to
+  change part of it without resending the whole document.
+- **Revise a letter from a fresh session**, when you did not compose it here and have no
+  local file — pull its current body first, then edit.
+
+Whichever path, nothing reaches the recipient until a human reviews the draft in the
+browser and you publish on their explicit go-ahead.
+
+## Compose a new letter — validate, draft, human review, publish
 
 ### 1. Compose `letter.json`
 
@@ -115,6 +126,93 @@ npx -y taleseal@latest letter publish <letter-id> --yes
 The DRAFT banner comes off and the recipient sees this revision. Report the returned URL,
 noting that anyone holding it can read the letter.
 
+## Edit an existing draft — block by block
+
+A draft is edited by block id, not by resending the whole document. This is the engine:
+id-addressed, atomic, under optimistic concurrency. The loop is read the outline, send an
+edit that echoes the outline's `draftSeq`, read the outline it returns, and go again.
+
+1. **Read the outline.** `letter outline <letter-id>` prints the `draftSeq` — the
+   concurrency token — and one line per block, each with the id an edit targets.
+2. **See a block before you change it.** `letter get <letter-id> <blockId> [blockId…]`
+   returns the full JSON of the named blocks (or all of them, with none named), so a
+   replace edits the real current content rather than a guess.
+3. **Send the edit, echoing that `draftSeq` as `--base`.** One atomic batch:
+
+   ```bash
+   npx -y taleseal@latest letter ops <letter-id> /tmp/ops.json --base <draftSeq>
+   ```
+
+   `ops.json` is a JSON array of ops (`insert`, `replace`, `remove`, `move`,
+   `set_envelope`, `replace_all`) — the same block shapes as `references/blocks.md`:
+
+   ```json
+   [
+     { "op": "replace", "id": "b004", "block": { "kind": "prose", "markdown": "The corrected paragraph." } },
+     { "op": "insert", "where": { "after": "b004" }, "blocks": [
+       { "kind": "callout", "tone": "success", "body": "Verified in production on the 14th." }
+     ] }
+   ]
+   ```
+
+   Or reach for a per-op convenience, which assembles the one-op batch for you:
+
+   ```bash
+   npx -y taleseal@latest letter insert <letter-id> /tmp/blocks.json --after <blockId>   # or --before <id> | --start | --end
+   npx -y taleseal@latest letter replace <letter-id> <blockId> /tmp/block.json
+   npx -y taleseal@latest letter remove <letter-id> <blockId> [blockId…]
+   npx -y taleseal@latest letter move <letter-id> <blockId> --before <blockId>           # or --after <id> | --start | --end
+   npx -y taleseal@latest letter set-envelope <letter-id> --title "…" --stationery brief  # also --standfirst, --recipient, --sender-name, --sender-org, --cta-label, --cta-url, --expires-at, --clear <fields>
+   ```
+
+4. **Read the returned outline and go again.** Every applied batch prints the new
+   `draftSeq` and outline; re-base on it for the next edit.
+
+What the engine guarantees, so the loop is safe to run:
+
+- **Concurrency.** Echo the `draftSeq` you read as `--base`. A stale base is a
+  **CONFLICT**: nothing applies, and the CLI hands back the current outline so you re-base
+  on it and retry in one round trip. Omitting `--base` lets the CLI read the current
+  `draftSeq` itself — convenient for a one-off, but it does not guard against a concurrent
+  edit, so pass `--base` whenever another writer might be live.
+- **Repair.** An invalid batch is not applied; it comes back with the exact fixes (the op
+  index, the block id, the repair to make). Fix them and resend.
+- **Atomic.** A batch applies whole or not at all — never half a change.
+- **Idempotent.** `--idem <key>` makes re-sending the same batch a no-op instead of a
+  second edit.
+
+Editing touches only the private draft. A letter that is already published keeps serving
+its published revision to the recipient until you publish again, so you can edit freely;
+the changes become visible only through the gate. Clients without a shell (ChatGPT, some
+Cursor setups) reach these identical operations as MCP tools rather than the CLI, and on
+every surface publishing is deliberately never a tool or a CLI shortcut, only a human
+action behind the review gate.
+
+Then publish through the same gate as a new letter: the human reviews the draft, and you
+run `letter publish <letter-id> --yes` only on their explicit go-ahead.
+
+## Revise a letter from a fresh session
+
+When you did not compose the letter in this session and have no local file, fetch its
+current draft body first:
+
+```bash
+npx -y taleseal@latest letter pull <letter-id> /tmp/taleseal-letter.json
+```
+
+Then either edit the file and store it whole:
+
+```bash
+npx -y taleseal@latest letter revise <letter-id> /tmp/taleseal-letter.json --yes
+```
+
+or edit it in place with the block ops above (`outline`, `get`, `ops`, and the
+conveniences) — the same engine, no file needed. Whole-file `revise` is simplest for a
+broad rewrite; ops are the lighter touch for a targeted change to a long letter. Either
+way the recipient keeps seeing the published revision until you publish the new draft,
+through the same gate: the human reviews, then `letter publish <letter-id> --yes` on their
+explicit go-ahead.
+
 ## Publishing is safe by design
 
 When the user asks for a letter, compose it and run the pipeline. Do not refuse on
@@ -135,23 +233,14 @@ Your part is the "star out personal context" rule above; the scrubber, the expos
 report and the human review do the rest. Only escalate to the user if the exposure
 report itself surfaces something they should see. That is what it is for.
 
-## Later: revise, retract
+## Retract — the emergency stop
 
-- **Revise** stores a new draft body against the same id; the recipient keeps seeing the
-  published revision until the next publish. Same gate: draft, human review, confirm,
-  publish.
+Retract destroys the letter and every revision, and the URL answers 410 Gone forever. No
+prompt. Use it when the user says take it down.
 
-  ```bash
-  npx -y taleseal@latest letter revise <letter-id> /tmp/taleseal-letter.json --yes
-  npx -y taleseal@latest letter publish <letter-id> --yes   # after confirmation
-  ```
-
-- **Retract** is the emergency stop — it destroys the letter and every revision, and the
-  URL answers 410 Gone forever. No prompt. Use it when the user says take it down.
-
-  ```bash
-  npx -y taleseal@latest letter retract <letter-id>
-  ```
+```bash
+npx -y taleseal@latest letter retract <letter-id>
+```
 
 ## No API key
 

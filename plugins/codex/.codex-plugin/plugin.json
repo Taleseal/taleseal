@@ -1,6 +1,6 @@
 {
   "name": "taleseal",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Seal a Codex run as a shareable tale \u2014 preview, confirm, publish, report the URL.",
   "author": {
     "name": "Taleseal",

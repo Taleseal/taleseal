@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://taleseal.com"><img src="./assets/readme-banner.png" alt="taleseal — no tale, didn't happen. One command seals an agent run as a page anyone can read." width="1200"></a>
+  <a href="https://taleseal.com"><img src="./assets/readme-banner.png" alt="taleseal — agents should show their work. Your agent writes up what it did as a page anyone can read." width="1200"></a>
 </p>
 
 <p align="center">
@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://taleseal.com/t/example">example tale</a> ·
+  <a href="https://taleseal.com/integrate/tales/gallery">tale gallery</a> ·
   <a href="https://taleseal.com/start">get started</a> ·
   <a href="https://taleseal.com/integrate">integrate</a> ·
   <a href="https://taleseal.com/pricing">pricing (free)</a> ·
@@ -18,20 +18,21 @@
 
 # taleseal
 
-Seal an agent run as a shareable **tale** — the narrative of what the agent did (trigger →
-data consumed → decisions taken and set aside → outcome), published to one short, unguessable
-URL. Plain English on top, the commands, diffs and test output underneath. Anyone with the
-link can read how the agent got there; nobody needs an account to view.
+Agents should show their work. taleseal turns what an agent just did into a **tale** — a
+readable page it composes from the work (the point up top in plain English, the commands,
+diffs, tables and charts underneath, an evidence block citing the sources), published to
+one short, unguessable URL. Anyone with the link can read how the work got done; nobody
+needs an account to view.
 
-```sh
-npx taleseal seal      # reads the newest session locally, shows a preview, waits for your yes
-```
+A tale is composed, not captured: the agent decides what mattered and writes it up, then
+drives the CLI to validate it, draft it privately for you to review in the browser, and
+publish only once you confirm.
 
 This repository holds the official plugin marketplaces for [taleseal.com](https://taleseal.com).
-All capture, redaction and publishing logic lives in the
-[`taleseal` npm CLI](https://www.npmjs.com/package/taleseal); the plugins here are thin
-wrappers that always show you a preview — redaction report included — before anything leaves
-your machine.
+All redaction and publishing logic lives in the
+[`taleseal` npm CLI](https://www.npmjs.com/package/taleseal); the plugins here teach your
+agent when and how to compose a tale and drive that CLI. Nothing is published until you
+review the private draft and confirm.
 
 ## Install
 
@@ -50,8 +51,8 @@ Or from a shell:
 claude plugin marketplace add Taleseal/taleseal && claude plugin install taleseal@taleseal
 ```
 
-Then `/taleseal:seal` previews and publishes the current session, or just say
-"seal this session".
+Then `/taleseal:tale` writes up the session's work and publishes it, or just say "turn this
+into a shareable page".
 
 ### Codex
 
@@ -60,7 +61,7 @@ codex plugin marketplace add Taleseal/taleseal
 codex plugin add taleseal@taleseal
 ```
 
-Then ask Codex to "seal this session".
+Then ask Codex to "write this session up as a tale".
 
 ### Cursor
 
@@ -68,9 +69,10 @@ Coming — see [`plugins/cursor/`](./plugins/cursor).
 
 ## First run
 
-Previews need no account. Publishing needs an API key: `npx -y taleseal login` opens the
-browser, signs you up on the way if needed, and stores the key on your machine. On CI, mint
-a key in the [dashboard](https://taleseal.com/dashboard) and set `TALESEAL_API_KEY`.
+Composing and validating a tale needs no account. Publishing needs an API key:
+`npx -y taleseal login` opens the browser, signs you up on the way if needed, and stores the
+key on your machine. On CI, mint a key in the [dashboard](https://taleseal.com/dashboard)
+and set `TALESEAL_API_KEY`.
 
 ## Distributing to a team (Claude Code)
 
@@ -104,8 +106,8 @@ specification — so today's install paths never move.
 ## Security
 
 See [SECURITY.md](./SECURITY.md). The plugins track `taleseal@latest` deliberately — the
-API refuses outdated clients, so a pinned plugin would seal nothing — and nothing is
-published without a human confirming the preview.
+API refuses outdated clients, so a pinned plugin would publish nothing — and nothing is
+published without a human reviewing the private draft first.
 
 ## Licence
 

@@ -32,6 +32,36 @@ jobs:
             exit 1
           fi
 
+      # Every plugin surface invokes the taleseal CLI. When the CLI's top-level verbs
+      # changed (the tale-only pivot dropped `seal` and `letter`), the plugins kept
+      # calling the dead verbs and every user hit "unknown command, exit 1" — that
+      # regression is exactly what this guard catches. The allow-list below is the
+      # current CLI's verb surface; keep it in lockstep with the `taleseal` npm package
+      # (npmjs.com/package/taleseal). Add a verb here only when the published CLI has it.
+      - name: Every invoked CLI verb is real
+        run: |
+          # The current taleseal CLI verb surface (top-level; no `seal`, no `letter`):
+          ALLOW="validate draft publish revise retract pull outline get ops insert replace remove move set-envelope upload login logout"
+          # Collect every invoked verb across plugins/** (commands, skills, hooks, agents,
+          # READMEs). Two invocation forms appear: the canonical `taleseal@latest <verb>`
+          # and backticked prose like `taleseal retract <id>`. The `<verb>` usage
+          # placeholder and plain prose ("taleseal accepts …") start with `<` or are not
+          # backticked, so neither is mistaken for a verb.
+          verbs=$(
+            {
+              grep -rhoE 'taleseal@latest[[:space:]]+[a-z][a-z-]*' plugins || true
+              grep -rhoE '`taleseal[[:space:]]+[a-z][a-z-]*' plugins || true
+            } | sed -E 's/^`?taleseal(@latest)?[[:space:]]+//' | sort -u
+          )
+          bad=
+          for verb in $verbs; do
+            case " $ALLOW " in
+              *" $verb "*) ;;
+              *) echo "::error::plugins invoke 'taleseal $verb', which is not a current CLI verb (allow-list: $ALLOW)"; bad=1 ;;
+            esac
+          done
+          if [ -n "$bad" ]; then exit 1; fi
+
       - name: All JSON parses
         run: |
           find . -name '*.json' -not -path './.git/*' -print0 | xargs -0 -n1 jq empty

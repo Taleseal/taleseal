@@ -1,6 +1,6 @@
 {
   "name": "taleseal",
-  "description": "Official taleseal plugins — seal agent runs as shareable tales.",
+  "description": "Official taleseal plugins — write up a session's work as a shareable tale.",
   "owner": {
     "name": "Taleseal",
     "url": "https://taleseal.com"
@@ -9,13 +9,13 @@
     {
       "name": "taleseal",
       "source": "./plugins/claude-code",
-      "description": "Seal your Claude Code runs as shareable tales. /taleseal:seal previews the composed tale — redaction report included — then publishes it to a short URL once you confirm.",
+      "description": "Write up your Claude Code session's work as a shareable tale. /taleseal:tale composes a readable page, drafts it privately for you to review in the browser, then publishes it to a short URL once you confirm.",
       "author": {
         "name": "Taleseal"
       },
       "homepage": "https://taleseal.com",
       "category": "workflow",
-      "tags": ["sharing", "transcripts", "publishing", "agent-runs"]
+      "tags": ["sharing", "publishing", "pages", "documentation"]
     }
   ]
 }

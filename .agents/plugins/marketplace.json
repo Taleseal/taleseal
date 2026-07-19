@@ -1,6 +1,6 @@
 {
   "name": "taleseal",
-  "description": "Taleseal integrations for Codex \u2014 seal agent runs as shareable tales",
+  "description": "Taleseal integrations for Codex — write up a session's work as a shareable tale",
   "owner": {
     "name": "Taleseal",
     "url": "https://taleseal.com"
@@ -8,19 +8,19 @@
   "plugins": [
     {
       "name": "taleseal",
-      "description": "Seal the current Codex session as a shareable tale \u2014 preview, confirm, publish, report the URL",
+      "description": "Write up the current Codex session's work as a shareable tale — compose the page, draft privately for review, publish to a short URL once you confirm",
       "source": "./plugins/codex",
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL"
       },
-      "version": "0.3.1",
+      "version": "0.4.0",
       "category": "productivity",
       "tags": [
         "sharing",
-        "transcripts",
+        "publishing",
         "tales",
-        "sessions"
+        "pages"
       ]
     }
   ]

@@ -1,8 +1,8 @@
-# The letter block vocabulary
+# The tale block vocabulary
 
-Every field and limit below is taken from the letter schema; the CLI's
-`letter validate` enforces exactly this. String limits are character counts;
-the whole letter is capped at 1 MiB of JSON.
+Every field and limit below is taken from the tale schema; the CLI's
+`validate` enforces exactly this. String limits are character counts;
+the whole tale is capped at 1 MiB of JSON.
 
 ## The envelope
 
@@ -14,14 +14,14 @@ the whole letter is capped at 1 MiB of JSON.
 | `recipient` | string ≤120 | optional greeting line, e.g. "For the Acme platform team" |
 | `sender` | object | required — `{ "name": string 1–120, "org"?: string ≤120 }` |
 | `stationery` | `"letter" \| "terminal" \| "brief" \| "ledger"` | optional, defaults to `"letter"` |
-| `sourceRunId` | string ≤80 | optional private back-reference to the run this letter came from; never rendered as a link |
+| `sourceRunId` | string ≤80 | optional private back-reference to the run this tale came from; never rendered as a link |
 | `cta` | object | optional footer call to action — `{ "label": string 1–60, "url": http(s) URL ≤2048 }` |
 | `blocks` | array 1–60 | required |
-| `expiresAt` | ISO datetime string | optional — the letter 404s after this moment |
+| `expiresAt` | ISO datetime string | optional — the tale 404s after this moment |
 
 **Block grammar** (validated, not advisory): a `lead` must be the first block; two
 consecutive `callout` blocks or two consecutive `line_chart` blocks are illegal — merge
-them or separate them with prose; at most one `stat_tiles` block per letter.
+them or separate them with prose; at most one `stat_tiles` block per tale.
 
 **Code languages** (`code`, and `before_after` panels): `ts`, `js`, `tsx`, `jsx`,
 `python`, `bash`, `json`, `yaml`, `diff`, `go`, `rust`, `sql`, `html`, `css`, `java`,
@@ -68,7 +68,7 @@ An aside with a tone. `tone`: `info` | `warning` | `success` | `note`; `title`: 
 
 ### stat_tiles
 
-The headline numbers — at most one per letter. `title`: optional, ≤120; `tiles`: 1–6,
+The headline numbers — at most one per tale. `title`: optional, ≤120; `tiles`: 1–6,
 each `{ label ≤60, value ≤30, delta?: ≤60, tone?: "good" | "flat" | "bad" }`.
 
 ```json
@@ -168,7 +168,7 @@ Action items. `items`: 1–12 of `{ text: 1–200, owner?: ≤80, due?: ≤40 }`
 
 ### evidence
 
-The letter's credibility layer — what the research consulted, as a designed panel.
+The tale's credibility layer — what the research consulted, as a designed panel.
 `title?`: ≤120; `items`: 1–30 of `{ kind: "web" | "pdf" | "doc" | "repo" | "dataset",
 name: 1–120, url?: http(s) ≤2048, snippet?: ≤500, note?: ≤200 }`. The `snippet` is the
 exact passage relied on, so the recipient can verify the source says it.

@@ -1,7 +1,7 @@
 {
   "name": "taleseal",
-  "version": "0.3.1",
-  "description": "Seal a Codex run as a shareable tale \u2014 preview, confirm, publish, report the URL.",
+  "version": "0.4.0",
+  "description": "Write up a Codex session's work as a shareable tale — compose the page, draft it privately for review, publish to a short URL once you confirm.",
   "author": {
     "name": "Taleseal",
     "url": "https://taleseal.com"
@@ -12,17 +12,16 @@
   "keywords": [
     "taleseal",
     "tale",
-    "seal",
     "share",
-    "transcript",
-    "session",
-    "publish"
+    "page",
+    "publish",
+    "documentation"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Taleseal",
-    "shortDescription": "Seal Codex runs as shareable tales",
-    "longDescription": "Turn the current Codex session into a shareable tale at a short URL: compose a local preview (title, status, beats, receipts, redaction report), show it to you, and publish only after you confirm. Failed and abandoned runs are first-class tales too.",
+    "shortDescription": "Write up Codex work as shareable tales",
+    "longDescription": "Turn this session's work into a shareable tale at a short URL: compose a readable page of blocks (headings, prose, code, diffs, tables, charts, an evidence block for sources), draft it privately behind a review URL, show it to you, and publish only after you confirm. The tale is a written-up account, never a transcript dump.",
     "developerName": "Taleseal",
     "category": "Productivity",
     "capabilities": [

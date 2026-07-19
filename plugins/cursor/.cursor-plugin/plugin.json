@@ -1,8 +1,8 @@
 {
   "name": "taleseal",
   "displayName": "Taleseal",
-  "version": "0.3.1",
-  "description": "Seal your Cursor agent runs as shareable tales. Say \"seal this session\" \u2014 the composed tale is previewed, redaction report included, and published to a short URL only after you confirm.",
+  "version": "0.4.0",
+  "description": "Write up your Cursor session's work as a shareable tale. Say \"turn this into a page\" — the tale is composed, drafted privately for you to review in the browser, and published to a short URL only after you confirm.",
   "author": {
     "name": "Taleseal",
     "url": "https://taleseal.com"
@@ -14,8 +14,8 @@
     "taleseal",
     "tales",
     "sharing",
-    "transcripts",
     "publishing",
-    "agent-runs"
+    "pages",
+    "documentation"
   ]
 }

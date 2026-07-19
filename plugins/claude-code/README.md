@@ -1,28 +1,28 @@
 # taleseal — Claude Code plugin
 
-Seal your Claude Code runs as shareable **tales**. The plugin adds:
+Write up your Claude Code session's work as a shareable **tale**. The plugin adds:
 
-- **`/taleseal:seal`** — preview the composed tale (title, beats, receipts, redaction
-  report), confirm, publish, get the URL. Optionally pass `--title "…"`, `--outcome "…"` or
-  `--status succeeded|partial|failed`.
-- **A sealing skill** — say "seal this session" or "share what this run did" in plain words
-  and Claude walks the same preview → confirm → publish flow.
-- **A letter skill** — say "write them a letter" or "write this up as a page for the
-  client" and Claude composes a branded **letter** at `taleseal.com/l/…` for any
-  recipient outside the session — a customer, a colleague, a friend: a curated,
-  presentable page (a solution, a plan, a write-up), not a transcript. It validates
-  against the block schema, creates a private draft with a DRAFT banner for you to review
-  in the browser, and publishes only after you confirm. Letters are versioned — revising
-  keeps the recipient's link stable — and cite their sources in an evidence block instead
-  of carrying receipts.
+- **`/taleseal:tale`** — compose the session's work into a readable page, validate it,
+  draft it privately behind a DRAFT banner for you to review in the browser, then publish
+  to a short URL once you confirm. Optionally pass what the tale should cover and who it is
+  for.
+- **A tale skill** — say "turn this into a page", "write this up" or "make a shareable link
+  for this" in plain words and Claude composes the page and walks the same
+  validate → draft → review → publish flow, with iterative `revise` / `ops` edits.
 
-All logic lives in the [`taleseal` npm CLI](https://www.npmjs.com/package/taleseal); the
-plugin is a thin, gate-respecting wrapper around it. Nothing is ever published without you
-seeing the preview and the redaction report first.
+A tale is composed, not captured: Claude decides what mattered and writes it up as blocks
+(headings, prose, code, diffs, tables, charts, timelines, an evidence block citing the
+sources), never a transcript dump. It renders at `taleseal.com/t/…` and is versioned —
+revising keeps the link stable.
+
+All redaction and publishing logic lives in the
+[`taleseal` npm CLI](https://www.npmjs.com/package/taleseal); the plugin is a thin,
+gate-respecting wrapper around it. Nothing is ever published without you reviewing the
+private draft and the redaction report first.
 
 ## Install
 
-Inside Claude Code (two slash commands):
+Inside Claude Code:
 
 ```
 /plugin marketplace add Taleseal/taleseal
@@ -36,17 +36,16 @@ claude plugin marketplace add Taleseal/taleseal && claude plugin install talesea
 ```
 
 The plugin invokes `npx -y taleseal@latest` — the [`taleseal` npm
-package](https://www.npmjs.com/package/taleseal) — so it always seals with the current CLI.
+package](https://www.npmjs.com/package/taleseal) — so it always runs with the current CLI.
 
 It is deliberately not pinned: taleseal accepts publishes from the latest client only. An
-older CLI composes a thinner tale — it cannot capture what it was never taught to capture —
-and a reader cannot tell a thin tale from an honest one, so a stale client is refused with
-`426 Upgrade Required`. A pin here would be a pin into a wall.
+older CLI composes against a stale schema and is refused with `426 Upgrade Required`, and
+plugins do not auto-update, so a pin here would be a pin into a wall.
 
 ## First run: the API key
 
-Previews need no account — `/taleseal:seal` shows you the composed tale either way.
-Publishing needs an API key, set up once, in your own terminal:
+Composing and validating a tale needs no account. Publishing needs an API key, set up once,
+in your own terminal:
 
 ```sh
 npx -y taleseal@latest login
@@ -54,42 +53,25 @@ npx -y taleseal@latest login
 
 The browser opens: approve there — signing up on the way if needed — and a key is created
 and stored at `~/.config/taleseal/config.json` (mode 0600) automatically. Nothing to copy
-or paste. If you skip this, `/taleseal:seal` walks you through it the first time you
-confirm a publish. On CI, mint a key in the [dashboard](https://taleseal.com/dashboard) and
-set `TALESEAL_API_KEY`. `taleseal logout` removes the stored key.
+or paste. If you skip this, `/taleseal:tale` walks you through it the first time you confirm
+a publish. On CI, mint a key in the [dashboard](https://taleseal.com/dashboard) and set
+`TALESEAL_API_KEY`. `taleseal logout` removes the stored key.
 
 ## Usage
 
-- `/taleseal:seal` — preview the newest transcript for this project, confirm, publish.
-- `/taleseal:seal --status failed` — seal an honest failure report (a first-class tale).
-- `/taleseal:seal --title "…" --outcome "…"` — override the drifted title and state the
-  verdict; a transcript has no conclusion of its own.
-- Or just ask: "seal this session", "publish a tale of this run".
+- `/taleseal:tale` — compose the session's work into a tale, review the draft, publish.
+- `/taleseal:tale write up the payment fix for the platform team` — steer what it covers and
+  who it is for.
+- Or just ask: "turn this into a shareable page", "publish a tale of this work".
 
-## Optional: auto-seal on session end (off by default)
+To change a published tale, ask Claude to revise it: it edits the private draft (block by
+block, or a whole-file `revise`) and republishes through the same review gate, so the link
+never changes. "Take it down" retracts it — every revision is destroyed and the URL 410s.
 
-You can add a hook so every session is sealed automatically when it ends. Claude Code hooks
-receive JSON on stdin including `transcript_path`. Add this to your `settings.json` yourself
-if you want it (`--quick --yes` is required — hooks are not a TTY and have no narrator):
+## Review is the gate, always
 
-```json
-{
-  "hooks": {
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "jq -r .transcript_path | xargs -I{} npx -y taleseal@latest seal --quick --yes --transcript {}"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-This is deliberately **not** bundled with the plugin, and think twice before adding it:
-`--yes` skips the redaction gate, which is the whole point. Transcripts can contain secrets —
-tokens pasted into prompts, env values echoed by tools. The CLI redacts common patterns, but
-client-side redaction is best-effort. Sealing stays a manual, deliberate act by default.
+Every publish goes through a private draft you open in the browser. The CLI redacts secret
+patterns before anything leaves your machine and shows an exposure report (paths, hosts,
+emails) at the draft step; the draft URL is unguessable and noindexed. There is no
+auto-publish hook and no capture path — a tale exists only because you reviewed it and
+confirmed.
